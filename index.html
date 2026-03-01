@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>ScaleFlow | Central de Comando</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #000; font-family: 'JetBrains Mono', monospace; color: #fff; }
+        .sidebar { width: 240px; border-right: 1px solid #222; height: 100vh; position: fixed; padding: 20px; }
+        .content { margin-left: 240px; padding: 40px; }
+        .menu-btn { background: #111; border: 1px solid #333; color: #fff; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; text-align: left; font-size: 14px; margin-bottom: 10px; }
+        .menu-btn:hover { background: #1a1a1a; border-color: #ff5722; }
+        .shopee-btn { border-left: 4px solid #ff5722; }
+        .section { display: none; }
+        .active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2 style="color: #ff5722; margin-bottom: 30px; font-weight: bold;">SCALEFLOW</h2>
+        <button onclick="show('dashboard')" class="menu-btn">🏠 Início</button>
+        <button onclick="show('intel')" class="menu-btn">🔍 Motor Intel</button>
+        <button onclick="show('produtos')" class="menu-btn shopee-btn">🔥 Ver Produtos</button>
+        <button onclick="show('config')" class="menu-btn">⚙️ Config</button>
+    </div>
+
+    <div class="content">
+        <div id="dashboard" class="section active">
+            <h1 class="text-2xl font-bold">Dashboard</h1>
+            <p style="color: #666; margin-top: 10px;">Bem-vindo à central de comando.</p>
+        </div>
+
+        <div id="intel" class="section">
+            <h1 class="text-2xl font-bold">Motor de Inteligência</h1>
+            <input type="text" placeholder="Link Shopee..." class="w-full bg-[#111] border border-[#333] p-3 rounded mt-4 text-white">
+        </div>
+
+        <div id="produtos" class="section">
+            <h1 class="text-2xl font-bold">Vitrine Viral</h1>
+            <div style="margin-top:20px; display:grid; gap:10px;">
+                <button class="menu-btn">Produto 01 - Viral</button>
+                <button class="menu-btn">Produto 02 - Oferta</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function show(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>
