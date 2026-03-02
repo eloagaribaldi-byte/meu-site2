@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Trash2, CheckCircle, ListTodo, StickyNote } from "lucide-react";
+import { Plus, Trash2, CheckCircle, ListTodo, StickyNote, BarChart3 } from "lucide-react";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("tasks");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [category, setCategory] = useState("Pessoal");
@@ -47,9 +47,28 @@ export default function App() {
     return task.category === filterCategory;
   });
 
+  // ===== MÉTRICAS =====
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter(t => t.done).length;
+  const pendingTasks = totalTasks - completedTasks;
+
+  const tasksByCategory = useMemo(() => {
+    const counts = {};
+    categories.forEach(cat => counts[cat] = 0);
+    tasks.forEach(task => {
+      if (!counts[task.category]) counts[task.category] = 0;
+      counts[task.category]++;
+    });
+    return counts;
+  }, [tasks, categories]);
+
+  const completionRate = totalTasks > 0
+    ? Math.round((completedTasks / totalTasks) * 100)
+    : 0;
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
 
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
@@ -59,9 +78,16 @@ export default function App() {
           Sistema de Organização
         </motion.h1>
 
-        {/* Navegação por Abas */}
+        {/* Navegação */}
         <Card className="rounded-2xl shadow-md">
-          <CardContent className="p-4 flex gap-3 justify-center">
+          <CardContent className="p-4 flex gap-3 justify-center flex-wrap">
+            <Button
+              variant={activeTab === "dashboard" ? "default" : "outline"}
+              onClick={() => setActiveTab("dashboard")}
+              className="flex gap-2"
+            >
+              <BarChart3 size={16}/> Dashboard
+            </Button>
             <Button
               variant={activeTab === "tasks" ? "default" : "outline"}
               onClick={() => setActiveTab("tasks")}
@@ -81,18 +107,86 @@ export default function App() {
 
         <AnimatePresence mode="wait">
 
-          {/* Tela de Tarefas */}
+          {/* DASHBOARD */}
+          {activeTab === "dashboard" && (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-6"
+            >
+              {/* Cards principais */}
+              <div className="grid md:grid-cols-4 gap-4">
+                <Card className="rounded-2xl shadow-md">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-gray-500">Total de Tarefas</p>
+                    <h2 className="text-2xl font-bold">{totalTasks}</h2>
+                  </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl shadow-md">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-gray-500">Concluídas</p>
+                    <h2 className="text-2xl font-bold">{completedTasks}</h2>
+                  </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl shadow-md">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-gray-500">Pendentes</p>
+                    <h2 className="text-2xl font-bold">{pendingTasks}</h2>
+                  </CardContent>
+                </Card>
+
+                <Card className="rounded-2xl shadow-md">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-gray-500">Taxa de Conclusão</p>
+                    <h2 className="text-2xl font-bold">{completionRate}%</h2>
+                    <div className="w-full bg-gray-200 h-2 rounded-full mt-2">
+                      <div
+                        className="bg-black h-2 rounded-full"
+                        style={{ width: `${completionRate}%` }}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Tarefas por categoria */}
+              <Card className="rounded-2xl shadow-md">
+                <CardContent className="p-4 space-y-4">
+                  <h2 className="text-lg font-semibold">Tarefas por Categoria</h2>
+                  <div className="space-y-3">
+                    {Object.entries(tasksByCategory).map(([cat, count]) => (
+                      <div key={cat}>
+                        <div className="flex justify-between text-sm">
+                          <span>{cat}</span>
+                          <span>{count}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 h-2 rounded-full">
+                          <div
+                            className="bg-black h-2 rounded-full"
+                            style={{ width: totalTasks > 0 ? `${(count / totalTasks) * 100}%` : "0%" }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* TAREFAS */}
           {activeTab === "tasks" && (
             <motion.div
               key="tasks"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
               className="space-y-6"
             >
-
-              {/* Nova Tarefa */}
               <Card className="rounded-2xl shadow-md">
                 <CardContent className="p-4 grid md:grid-cols-4 gap-3">
                   <Input
@@ -101,7 +195,6 @@ export default function App() {
                     onChange={(e) => setNewTask(e.target.value)}
                     className="md:col-span-2"
                   />
-
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -111,14 +204,12 @@ export default function App() {
                       <option key={index} value={cat}>{cat}</option>
                     ))}
                   </select>
-
                   <Button onClick={addTask} className="flex gap-2">
                     <Plus size={16}/> Adicionar
                   </Button>
                 </CardContent>
               </Card>
 
-              {/* Gerenciar Categorias */}
               <Card className="rounded-2xl shadow-md">
                 <CardContent className="p-4 space-y-3">
                   <h2 className="font-semibold">Categorias</h2>
@@ -126,20 +217,15 @@ export default function App() {
                     <Button
                       variant={filterCategory === "Todas" ? "default" : "outline"}
                       onClick={() => setFilterCategory("Todas")}
-                    >
-                      Todas
-                    </Button>
+                    >Todas</Button>
                     {categories.map((cat, index) => (
                       <Button
                         key={index}
                         variant={filterCategory === cat ? "default" : "outline"}
                         onClick={() => setFilterCategory(cat)}
-                      >
-                        {cat}
-                      </Button>
+                      >{cat}</Button>
                     ))}
                   </div>
-
                   <div className="flex gap-2">
                     <Input
                       placeholder="Nova categoria"
@@ -151,13 +237,11 @@ export default function App() {
                 </CardContent>
               </Card>
 
-              {/* Lista de Tarefas */}
               <Card className="rounded-2xl shadow-md">
                 <CardContent className="p-4 space-y-3">
                   {filteredTasks.length === 0 && (
                     <p className="text-center text-gray-500">Nenhuma tarefa encontrada.</p>
                   )}
-
                   {filteredTasks.map(task => (
                     <div
                       key={task.id}
@@ -169,7 +253,6 @@ export default function App() {
                         </p>
                         <span className="text-xs text-gray-500">{task.category}</span>
                       </div>
-
                       <div className="flex gap-2">
                         <Button size="icon" variant="outline" onClick={() => toggleTask(task.id)}>
                           <CheckCircle size={16}/>
@@ -182,18 +265,16 @@ export default function App() {
                   ))}
                 </CardContent>
               </Card>
-
             </motion.div>
           )}
 
-          {/* Tela de Anotações */}
+          {/* ANOTAÇÕES */}
           {activeTab === "notes" && (
             <motion.div
               key="notes"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
             >
               <Card className="rounded-2xl shadow-md">
                 <CardContent className="p-4 space-y-3">
