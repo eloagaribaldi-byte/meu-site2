@@ -1,58 +1,146 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>ScaleFlow | Central de Comando</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        body { background-color: #000; font-family: 'JetBrains Mono', monospace; color: #fff; }
-        .sidebar { width: 240px; border-right: 1px solid #222; height: 100vh; position: fixed; padding: 20px; }
-        .content { margin-left: 240px; padding: 40px; }
-        .menu-btn { background: #111; border: 1px solid #333; color: #fff; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; width: 100%; text-align: left; font-size: 14px; margin-bottom: 10px; }
-        .menu-btn:hover { background: #1a1a1a; border-color: #ff5722; }
-        .shopee-btn { border-left: 4px solid #ff5722; }
-        .section { display: none; }
-        .active { display: block; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScaleFlow | Central de Comando</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+body { background:#000; font-family:'JetBrains Mono', monospace; color:#fff; }
+.sidebar { width:240px; border-right:1px solid #222; height:100vh; position:fixed; padding:20px; background:#000; }
+.content { margin-left:240px; padding:40px; }
+.menu-btn { background:#111; border:1px solid #333; color:#fff; padding:12px 16px; border-radius:8px; cursor:pointer; transition:0.3s; width:100%; text-align:left; font-size:14px; margin-bottom:10px; }
+.menu-btn:hover { background:#1a1a1a; border-color:#ff5722; transform:translateX(4px); }
+.section { display:none; }
+.section.active { display:block; }
+.card { background:#111; border:1px solid #222; padding:20px; border-radius:10px; margin-top:20px; }
+.badge { padding:4px 8px; border-radius:6px; font-size:12px; }
+.viral { background:#ff5722; }
+@media(max-width:900px){
+.sidebar{ position:relative; width:100%; height:auto; border-right:none; border-bottom:1px solid #222; }
+.content{ margin-left:0; padding:20px; }
+}
+</style>
 </head>
+
 <body>
 
-    <div class="sidebar">
-        <h2 style="color: #ff5722; margin-bottom: 30px; font-weight: bold;">SCALEFLOW</h2>
-        <button onclick="show('dashboard')" class="menu-btn">🏠 Início</button>
-        <button onclick="show('intel')" class="menu-btn">🔍 Motor Intel</button>
-        <button onclick="show('produtos')" class="menu-btn shopee-btn">🔥 Ver Produtos</button>
-        <button onclick="show('config')" class="menu-btn">⚙️ Config</button>
-    </div>
+<div class="sidebar">
+<h2 class="text-xl font-bold mb-8 text-orange-500">SCALEFLOW</h2>
+<button onclick="show('dashboard')" class="menu-btn">🏠 Dashboard</button>
+<button onclick="show('produtos')" class="menu-btn">🔥 Produtos</button>
+<button onclick="show('analise')" class="menu-btn">📊 Análise</button>
+</div>
 
-    <div class="content">
-        <div id="dashboard" class="section active">
-            <h1 class="text-2xl font-bold">Dashboard</h1>
-            <p style="color: #666; margin-top: 10px;">Bem-vindo à central de comando.</p>
-        </div>
+<div class="content">
 
-        <div id="intel" class="section">
-            <h1 class="text-2xl font-bold">Motor de Inteligência</h1>
-            <input type="text" placeholder="Link Shopee..." class="w-full bg-[#111] border border-[#333] p-3 rounded mt-4 text-white">
-        </div>
+<div id="dashboard" class="section active">
+<h1 class="text-2xl font-bold">Central de Inteligência</h1>
+<p class="text-gray-500 mt-4">Sistema de detecção manual inteligente preparado para API futura.</p>
+</div>
 
-        <div id="produtos" class="section">
-            <h1 class="text-2xl font-bold">Vitrine Viral</h1>
-            <div style="margin-top:20px; display:grid; gap:10px;">
-                <button class="menu-btn">Produto 01 - Viral</button>
-                <button class="menu-btn">Produto 02 - Oferta</button>
-            </div>
-        </div>
-    </div>
+<div id="produtos" class="section">
+<h1 class="text-2xl font-bold">Cadastrar Produto</h1>
 
-    <script>
-        function show(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-        lucide.createIcons();
-    </script>
+<div class="card">
+<input id="nome" placeholder="Nome do produto" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="preco" type="number" placeholder="Preço de venda" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="custo" type="number" placeholder="Custo do produto" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="vendasAtual" type="number" placeholder="Vendas atuais" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="vendasAnterior" type="number" placeholder="Vendas semana passada" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="avaliacao" type="number" step="0.1" placeholder="Avaliação média (ex: 4.8)" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<input id="concorrencia" type="number" placeholder="Quantidade de concorrentes" class="w-full bg-black border border-[#333] p-3 rounded mb-3">
+<button onclick="adicionarProduto()" class="menu-btn">Salvar Produto</button>
+</div>
+
+<div id="lista" class="mt-6"></div>
+</div>
+
+<div id="analise" class="section">
+<h1 class="text-2xl font-bold">Ranking Inteligente</h1>
+<div id="ranking" class="mt-6"></div>
+</div>
+
+</div>
+
+<script>
+let produtos = JSON.parse(localStorage.getItem("scaleflow")) || [];
+
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+function calcularScore(p){
+let margem = ((p.preco - p.custo) / p.preco) * 100;
+let crescimento = ((p.vendasAtual - p.vendasAnterior) / (p.vendasAnterior || 1)) * 100;
+
+let score = 0;
+if(margem > 40) score += 20;
+if(crescimento > 15) score += 30;
+if(p.avaliacao >= 4.5) score += 20;
+if(p.vendasAtual > 500) score += 20;
+if(p.concorrencia < 200) score += 10;
+
+return { margem, crescimento, score };
+}
+
+function adicionarProduto(){
+let produto = {
+nome: nome.value,
+preco: parseFloat(preco.value),
+custo: parseFloat(custo.value),
+vendasAtual: parseInt(vendasAtual.value),
+vendasAnterior: parseInt(vendasAnterior.value),
+avaliacao: parseFloat(avaliacao.value),
+concorrencia: parseInt(concorrencia.value)
+};
+
+let calc = calcularScore(produto);
+produto.margem = calc.margem;
+produto.crescimento = calc.crescimento;
+produto.score = calc.score;
+
+produtos.push(produto);
+localStorage.setItem("scaleflow", JSON.stringify(produtos));
+
+render();
+}
+
+function render(){
+lista.innerHTML="";
+ranking.innerHTML="";
+
+produtos.forEach(p=>{
+let viral = p.score >= 70 ? '<span class="badge viral">🔥 Viral</span>' : '';
+
+lista.innerHTML += `
+<div class="card">
+<h3 class="font-bold">${p.nome} ${viral}</h3>
+<p>Margem: ${p.margem.toFixed(1)}%</p>
+<p>Crescimento: ${p.crescimento.toFixed(1)}%</p>
+<p>Score: ${p.score}</p>
+</div>
+`;
+});
+
+let ordenado = [...produtos].sort((a,b)=>b.score - a.score);
+
+ordenado.forEach(p=>{
+ranking.innerHTML += `
+<div class="card">
+<h3 class="font-bold">${p.nome}</h3>
+<p>Score: ${p.score}</p>
+</div>
+`;
+});
+}
+
+render();
+</script>
+
 </body>
 </html>
